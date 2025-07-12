@@ -1,5 +1,5 @@
 import { useState, useRef } from "react"
-
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 export default function HomePage(){
 
@@ -7,7 +7,7 @@ export default function HomePage(){
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const specializzazione= useRef<HTMLSelectElement>(null);
-    const [anniEsperienza, setAnniEsperienza] = useState<number>(0);
+    const anniEsperienza= useRef<HTMLInputElement>(null);
     const [description, setDescription] = useState<string>("");
 
     const letters : string[] = "abcdefghijklmnopqrstuvwxyz".split("");
@@ -24,7 +24,7 @@ export default function HomePage(){
                                                 password.split("").some((char) => symbols.includes(char));
     const isValidAnniEsperienza: boolean = anniEsperienza >= 0;
     const isValidDesc: boolean = description !== "" && description.trim().length >= 10 && description.trim().length <= 100;
-
+    
     function handleSubmit(e: React.FormEvent<HTMLFormElement>){
 
         e.preventDefault();
@@ -51,9 +51,21 @@ export default function HomePage(){
         
     }
 
+    function handleReset(e: React.MouseEvent<HTMLButtonElement>){
+        e.preventDefault();
+
+        setName("");
+        setUsername("");
+        anniEsperienza.current!.value = "";
+        specializzazione.current!.value = "";
+        setPassword("");
+        setDescription("");
+    }
+
+
     return <>
     
-        <div className="container mt-5">
+        <div className="container my-5">
             <div className="card shadow-sm">
                 <div className="card-header bg-primary text-white fw-semibold">
                     ✉️ Register
@@ -132,11 +144,13 @@ export default function HomePage(){
                                 className="form-control"
                                 id="anniEsperienza"
                                 name="anniEsperienza"
-                                value={anniEsperienza}
-                                onChange={e => setAnniEsperienza(parseInt(e.target.value))}
+                                min={0}
+                                max={10}
+                                ref={anniEsperienza}
                                 required
                                 
                             />
+                            {/* {anniEsperienza.current.value !== 0 ? isValidAnniEsperienza ? <p className="text-success">✅</p> : <p className="text-danger">Non può contenere un numero negativo❌</p> : null} */}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="description" className="form-label">Description</label>
@@ -155,9 +169,19 @@ export default function HomePage(){
                         <button type="submit" className="btn btn-primary w-100">
                             Send Candidature
                         </button>
+                        <button type="submit" onClick={handleReset} className="btn btn-secondary w-100">
+                            Reset
+                        </button>
+
                     </form>
                 </div>
             </div>
         </div>
+        <div className="mt-5">
+            <div className="mt-5">
+                <i className="bi bi-arrow-up bg-primary p-3 fs-2" onClick={goToStartForm}></i>
+            </div>
+        </div>
+
     </>
 }
